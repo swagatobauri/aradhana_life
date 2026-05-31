@@ -1,0 +1,14 @@
+Astrological Houses
+
+1st House (Ascendant): The self, physical appearance, first impressions, beginnings, and how you project yourself.
+2nd House: Personal finances, values, material possessions, self-worth, and earning potential.
+3rd House: Communication, thought patterns, early education, siblings, neighbors, and short journeys.
+4th House (IC): Home, family roots, ancestry, private life, the mother/father figure, and emotional foundation.
+5th House: Creativity, romance, children, play, joy, hobbies, and self-expression.
+6th House: Daily routines, work environment, physical health, service, pets, and habits.
+7th House (Descendant): One-on-one partnerships, marriage, business contracts, open enemies, and shadow self.
+8th House: Shared resources, intimacy, transformation, death, taxes, inheritances, and deep psychological bonding.
+9th House: Higher education, philosophy, religion, long-distance travel, publishing, and expansion of worldview.
+10th House (Midheaven/MC): Career, public reputation, ambitions, authority figures, and life path achievements.
+11th House: Friendships, networks, community, social causes, hopes, dreams, and collective goals.
+12th House: The subconscious, hidden enemies, spirituality, solitude, retreat, karma, and endings.

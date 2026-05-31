@@ -1,0 +1,14 @@
+Zodiac Signs
+
+Aries (Fire, Cardinal): Bold, pioneering, energetic, impatient, courageous, independent.
+Taurus (Earth, Fixed): Grounded, sensual, stubborn, reliable, patient, values stability.
+Gemini (Air, Mutable): Adaptable, curious, communicative, restless, versatile, intellectual.
+Cancer (Water, Cardinal): Nurturing, emotional, protective, intuitive, nostalgic, sensitive.
+Leo (Fire, Fixed): Confident, dramatic, generous, loyal, creative, craves recognition.
+Virgo (Earth, Mutable): Analytical, practical, detail-oriented, helpful, perfectionist, modest.
+Libra (Air, Cardinal): Diplomatic, charming, peace-loving, indecisive, focused on partnership and aesthetics.
+Scorpio (Water, Fixed): Intense, magnetic, perceptive, secretive, transformative, resilient.
+Sagittarius (Fire, Mutable): Optimistic, adventurous, philosophical, blunt, freedom-loving, restless.
+Capricorn (Earth, Cardinal): Ambitious, disciplined, responsible, pragmatic, structured, patient.
+Aquarius (Air, Fixed): Innovative, rebellious, humanitarian, detached, eccentric, intellectual.
+Pisces (Water, Mutable): Compassionate, dreamy, artistic, empathetic, escapist, spiritual.
