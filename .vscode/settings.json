@@ -1,0 +1,11 @@
+{
+  "python.analysis.extraPaths": [
+    "./.venv/lib/python3.11/site-packages"
+  ],
+  "pyright.extraPaths": [
+    "./.venv/lib/python3.11/site-packages"
+  ],
+  "pyrefly.extraPaths": [
+    "./.venv/lib/python3.11/site-packages"
+  ]
+}

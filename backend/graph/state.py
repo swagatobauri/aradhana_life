@@ -9,8 +9,12 @@ automatically.
 
 from __future__ import annotations
 
-import operator
 from typing import Annotated, Any, Optional, TypedDict
+import operator
+# pyrefly: ignore [missing-import]
+from langgraph.graph.message import add_messages
+# pyrefly: ignore [missing-import]
+from langchain_core.messages import BaseMessage
 
 
 class BirthDetails(TypedDict, total=False):
@@ -41,7 +45,7 @@ class AgentState(TypedDict, total=False):
     """
 
     # ── Chat history (append-only) ──────────────────────────────
-    messages: Annotated[list[Any], operator.add]
+    messages: Annotated[list[BaseMessage], add_messages]
 
     # ── User birth data ─────────────────────────────────────────
     birth_details: BirthDetails

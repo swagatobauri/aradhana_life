@@ -7,9 +7,9 @@ from langchain_community.document_loaders import TextLoader
 # pyrefly: ignore [missing-import]
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 # pyrefly: ignore [missing-import]
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 # pyrefly: ignore [missing-import]
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 # Determine paths
 BASE_DIR = Path(__file__).resolve().parent

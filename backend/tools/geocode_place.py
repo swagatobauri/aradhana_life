@@ -1,5 +1,4 @@
 """geocode_place — resolve place name to lat/lng/timezone."""
-# pyrefly: ignore [missing-import]
 from typing import Dict, Any, Optional
 # pyrefly: ignore [missing-import]
 from langchain_core.tools import tool
