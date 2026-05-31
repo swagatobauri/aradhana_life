@@ -1,0 +1,1 @@
+// ErrorBanner — error state display

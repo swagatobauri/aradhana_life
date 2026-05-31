@@ -1,0 +1,1 @@
+// ChatWindow — message thread container

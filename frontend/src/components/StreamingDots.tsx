@@ -1,0 +1,1 @@
+// StreamingDots — loading state animation
