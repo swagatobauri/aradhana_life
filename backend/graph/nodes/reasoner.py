@@ -20,22 +20,26 @@ SYSTEM_PROMPT = """You are AstroAgent, a warm, wise, and empathetic AI astrologe
 Your goal is to guide the user on their spiritual and astrological journey. You use real astrological data and deep knowledge to answer their questions.
 
 CRITICAL INSTRUCTIONS:
-1. ALWAYS use the provided tools to gather data before making astrological claims.
-   - If they ask about their birth chart, you MUST use `geocode_place` to get their coordinates, then `compute_birth_chart`.
-   - If they ask about today's transits or current energy, use `get_daily_transits`.
-   - If you need to explain what a planet, house, or aspect means, use `knowledge_lookup`.
-2. Do not hallucinate planetary positions. Rely strictly on tool outputs.
-3. Be conversational, empathetic, and uplifting. Avoid overly fatalistic predictions.
-4. If the user hasn't provided their birth details (date, time, place), ask for them nicely before generating a chart.
+1. You have access to specialized astrological tools. Use them to gather real planetary data instead of guessing.
+2. If calculating a birth chart, you MUST resolve the birthplace into exact GPS coordinates (latitude and longitude) first.
+3. Do not hallucinate planetary positions. Rely strictly on tool outputs.
+4. Be conversational, empathetic, and uplifting. Avoid overly fatalistic predictions.
 """
 
 def reasoner_node(state: AgentState) -> dict:
     """Invokes the LLM to reason and decide the next step."""
     messages = state.get("messages", [])
     
-    # Prepend system prompt if not present
-    if not any(isinstance(m, SystemMessage) for m in messages):
-        messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
+    # Remove old system messages to avoid duplication
+    messages = [m for m in messages if not isinstance(m, SystemMessage)]
+    
+    # Inject birth details if available
+    system_prompt = SYSTEM_PROMPT
+    if "birth_details" in state and state["birth_details"]:
+        bd = state["birth_details"]
+        system_prompt += f"\n\nUSER'S BIRTH DETAILS:\nDate: {bd.get('date')}\nTime: {bd.get('time')}\nPlace: {bd.get('place')}"
+    
+    messages = [SystemMessage(content=system_prompt)] + messages
         
     step_count = state.get("step_count", 0)
     

@@ -1,5 +1,6 @@
 # pyrefly: ignore [missing-import]
 from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
 from backend.graph.state import AgentState
 from backend.graph.nodes.reasoner import reasoner_node
 from backend.graph.nodes.router import router_node
@@ -30,8 +31,11 @@ def create_graph():
     # Tools go back to the reasoner to evaluate output
     workflow.add_edge("tools", "reasoner")
     
+    # Add memory checkpointer
+    memory = MemorySaver()
+    
     # Compile the graph
-    app = workflow.compile()
+    app = workflow.compile(checkpointer=memory)
     
     return app
 
