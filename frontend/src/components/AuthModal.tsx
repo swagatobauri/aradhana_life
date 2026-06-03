@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { useChatStore } from "@/store/chatStore";
 import { useRouter } from "next/navigation";
@@ -11,9 +11,10 @@ export default function AuthModal() {
   const { isAuthModalOpen, setAuthModalOpen, setAuth } = useAuthStore();
   const { birthDetails } = useChatStore();
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
@@ -138,18 +139,25 @@ export default function AuthModal() {
               />
             </div>
             
-            <div>
+            <div className="relative">
               <label className="block text-xs font-medium uppercase tracking-wider text-brand-navy/70 mb-1">
                 Password
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white/50 border border-brand-navy/20 rounded-lg focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all"
+                className="w-full px-4 py-3 bg-white/50 border border-brand-navy/20 rounded-lg focus:outline-none focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-all pr-12"
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-[38px] text-brand-navy/50 hover:text-brand-navy transition-colors"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
 
             {error && (

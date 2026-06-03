@@ -51,7 +51,7 @@ export default function Hero() {
             token ? (
               <UserProfile />
             ) : (
-              <button onClick={() => setAuthModalOpen(true)} className="hover:text-brand-orange transition-colors text-brand-navy font-bold uppercase tracking-[0.2em] text-xs">Sign In</button>
+              <button onClick={() => setAuthModalOpen(true)} className="hover:text-brand-orange transition-colors text-brand-navy font-bold uppercase tracking-[0.2em] text-xs">Get Started</button>
             )
           ) : (
             <div className="w-16 h-4"></div>
