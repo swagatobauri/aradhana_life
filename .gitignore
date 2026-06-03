@@ -14,3 +14,6 @@ out/
 build/
 dist/
 .DS_Store
+checkpoints.sqlite
+test_stream.py
+frontend/.env.local

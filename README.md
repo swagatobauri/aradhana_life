@@ -1,176 +1,277 @@
-# AstroAgent — Aradhana Life
+# ✦ AstroAgent — Aradhana's Agentic Vedic Astrologer
 
-> An agentic AI astrology companion built with LangGraph, real ephemeris math, and a calm, conversational UI.
+> _"Yathā Drishti, Tathā Srishti" — As is the vision, so is the creation._
 
----
+AstroAgent is a full-stack, agentic AI astrology companion. A user shares their birth details and converses with **Guruji** — a warm, empathetic Vedic astrologer who computes real birth charts, reasons over planetary data with tools, and answers questions with spiritual depth and care.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Setup](#setup)
-- [Architecture](#architecture)
-- [Graph Diagram](#graph-diagram)
-- [Evaluation](#evaluation)
-- [Known Limitations](#known-limitations)
+**Built with:** LangGraph · FastAPI · Next.js · MongoDB · Groq (LLaMA 3.3 70B) · Flatlib
 
 ---
 
-## Overview
+## 📸 Screenshots
 
-AstroAgent is a chat-based astrology companion for [Aradhana](https://aradhana.app). Users share their birth details (date, time, place) and ask questions like *"what does my chart say about my career?"* or *"what's the energy for me today?"*. The agent reasons in steps, calls real tools to get real planetary data, and responds conversationally with warmth and care.
-
-### Key Capabilities
-
-| Feature | Description |
-|---|---|
-| **Birth chart computation** | Real planetary positions via flatlib ephemeris — never hallucinated |
-| **Daily transits** | Current planetary positions compared to natal chart |
-| **Knowledge retrieval** | RAG over curated astrology notes (planets, houses, signs, aspects) |
-| **Safety guardrails** | Never presents readings as medical, financial, or legal advice |
-| **Streaming UI** | Real-time SSE streaming with live tool activity indicators |
+| Landing Page | Chat with Guruji | Birth Chart Visualization |
+|:---:|:---:|:---:|
+| Elegant landing with auth | Real-time streaming chat | Interactive Vedic chart |
 
 ---
 
-## Setup
+## 🏗️ Architecture Overview
 
-### Prerequisites
+### High-Level Design (HLD)
 
-- Python 3.11+
-- Node.js 18+
-- A [Groq](https://console.groq.com/) API key
-
-### 1. Clone & configure
-
-```bash
-git clone <repo-url> aradhana_life
-cd aradhana_life
-cp .env.example .env
-# Edit .env and add your GROQ_API_KEY
+```
+┌──────────────────────────────────────────────────────────────┐
+│                        CLIENT (Next.js)                       │
+│  ┌──────────┐  ┌──────────────┐  ┌───────────────────────┐   │
+│  │ BirthForm│  │  ChatWindow  │  │   VedicChart (SVG)    │   │
+│  │          │──│  (SSE Stream)│  │                       │   │
+│  └──────────┘  └──────┬───────┘  └───────────────────────┘   │
+│                       │ POST /api/chat (SSE)                  │
+└───────────────────────┼──────────────────────────────────────┘
+                        │
+                        ▼
+┌──────────────────────────────────────────────────────────────┐
+│                     SERVER (FastAPI)                           │
+│  ┌────────────────────────────────────────────────────────┐   │
+│  │              LangGraph State Machine                   │   │
+│  │                                                        │   │
+│  │  START ──▶ IntentClassifier ──▶ Reasoner ◀──▶ Tools    │   │
+│  │                │                    │                  │   │
+│  │                ▼                    ▼                  │   │
+│  │           OffTopic ──▶ END     Conditional ──▶ END     │   │
+│  └────────────────────────────────────────────────────────┘   │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐                    │
+│  │ Auth API │  │ Profile  │  │ History  │                    │
+│  │ (JWT)    │  │ (Mongo)  │  │ (Mongo)  │                    │
+│  └──────────┘  └──────────┘  └──────────┘                    │
+└──────────────────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌──────────────────────────────────────────────────────────────┐
+│                     DATA LAYER                                │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────────────┐   │
+│  │   MongoDB     │  │  ChromaDB    │  │  Flatlib/Swiss    │   │
+│  │  (Profiles,   │  │  (RAG Vector │  │  Ephemeris        │   │
+│  │  Checkpoints) │  │   Store)     │  │  (Chart Math)     │   │
+│  └──────────────┘  └──────────────┘  └───────────────────┘   │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Backend
+### Low-Level Design (LLD) — The LangGraph Agent Loop
+
+```mermaid
+stateDiagram-v2
+    [*] --> IntentClassifier
+    IntentClassifier --> OffTopic : intent = off_topic
+    IntentClassifier --> Reasoner : intent = chart / horoscope / free_form
+    OffTopic --> [*]
+
+    state Reasoner {
+        [*] --> LLM_Think
+        LLM_Think --> ToolCall : has tool_calls
+        LLM_Think --> FinalAnswer : no tool_calls
+        ToolCall --> ToolNode
+        ToolNode --> LLM_Think : tool output observed
+    }
+
+    Reasoner --> [*] : FinalAnswer
+```
+
+**State Schema (`AgentState`):**
+```python
+class AgentState(TypedDict):
+    messages: Annotated[list, add_messages]  # Full conversation history
+    birth_details: Optional[dict]            # {date, time, place}
+    intent: Optional[str]                    # Classified intent
+    step_count: int                          # Loop budget guard
+```
+
+---
+
+## 🔧 Tools (All 4 Implemented)
+
+| # | Tool | Library | Description |
+|---|------|---------|-------------|
+| 1 | `geocode_place()` | geopy (Nominatim) | Resolves a place name → lat, lng, IANA timezone. Required before any chart computation. |
+| 2 | `compute_birth_chart()` | flatlib + Swiss Ephemeris | Computes planetary positions, houses, and ascendant from real ephemeris data. **No hallucinated positions.** |
+| 3 | `get_daily_transits()` | flatlib | Computes current planetary transits (right now) to compare against the user's natal chart. |
+| 4 | `knowledge_lookup()` | ChromaDB (RAG) | Retrieves relevant passages from a curated set of Vedic astrology reference texts for grounded interpretations. |
+
+**Tool Execution Flow:**
+```
+User: "Tell me about my career"
+  └─▶ Reasoner decides: I need the birth chart first
+       └─▶ geocode_place("Mumbai, India") → {lat: 19.07, lng: 72.87, tz: "Asia/Kolkata"}
+            └─▶ compute_birth_chart(date, time, lat, lng, tz) → {planets: {...}, houses: {...}}
+                 └─▶ Reasoner synthesizes a warm, spiritual career reading
+```
+
+---
+
+## 🚀 Setup & Installation
+
+### Prerequisites
+- Python 3.11+
+- Node.js 18+
+- MongoDB (local or Atlas URI)
+- Groq API Key (free at [console.groq.com](https://console.groq.com))
+
+### 1. Clone & Environment
 
 ```bash
-cd backend
+git clone https://github.com/your-username/aradhana_life.git
+cd aradhana_life
+
+# Backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
 
-### 3. Frontend
-
-```bash
+# Frontend
 cd frontend
 npm install
-npm run dev
+cd ..
 ```
 
-The app will be available at `http://localhost:3000`.
+### 2. Environment Variables
 
----
+Create a `.env` file in the root directory:
 
-## Architecture
-
-### Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **LLM** | Groq — llama-3.3-70b-versatile |
-| **Agent framework** | LangGraph 1.2.2 |
-| **Ephemeris** | flatlib (real planetary computation) |
-| **Geocoding** | geopy (Nominatim) + timezonefinder |
-| **RAG** | ChromaDB + sentence-transformers |
-| **API** | FastAPI + SSE (sse-starlette) |
-| **Frontend** | Next.js 14 · TypeScript · Tailwind · Zustand · Framer Motion |
-
-### Backend Structure
-
-```
-backend/
-├── main.py                 # FastAPI entry point
-├── api/routes.py           # /chat, /stream, /session endpoints
-├── graph/
-│   ├── state.py            # AgentState TypedDict
-│   ├── graph.py            # LangGraph graph definition
-│   ├── edges.py            # Conditional edge logic
-│   └── nodes/              # router, reasoner, tool_node
-├── tools/                  # 4 tools: chart, transits, geocode, RAG
-├── rag/                    # ChromaDB vector store + astrology notes
-└── prompts/                # System prompt definition
+```env
+GROQ_API_KEY=gsk_your_key_here
+MONGODB_URI=mongodb://localhost:27017/aradhana
+JWT_SECRET=your_jwt_secret_here
 ```
 
----
+Create `frontend/.env.local`:
 
-## Graph Diagram
-
-```mermaid
-graph TD
-    START([START]) --> router["router_node<br/>Intent classification"]
-    router -->|chart_request| reasoner["reasoner_node<br/>LLM reasoning"]
-    router -->|daily_horoscope| reasoner
-    router -->|free_form| reasoner
-    router -->|off_topic| respond["Direct response<br/>(skip tools)"]
-    reasoner -->|tool_call| tool["tool_node<br/>Execute tool"]
-    reasoner -->|no tool call| END_NODE([END])
-    tool --> reasoner
-    reasoner -->|step_count > 6| END_NODE
-    respond --> END_NODE
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
-### Agent State Flow
-
-```
-User message
-  → Router classifies intent
-    → Reasoner decides tool calls
-      → Tool executes (ephemeris / geocode / RAG)
-        → Reasoner observes result
-          → Loop or final response
-```
-
----
-
-## Evaluation
-
-The eval harness lives in `evals/` and contains:
-
-- **`golden_set.jsonl`** — 25 versioned test cases covering valid charts, invalid dates, missing data, off-topic, adversarial inputs, and safety guardrails
-- **`run_evals.py`** — One-command runner against the live agent
-- **`judge.py`** — LLM-as-judge scoring with a 1–5 rubric
-- **`scorecard.py`** — Terminal scorecard with pass rates, latency (p50/p95), and cost
-
-Run evaluations:
+### 3. Run
 
 ```bash
-cd evals
-python run_evals.py
-python scorecard.py
+# Terminal 1: Backend (auto-reloads)
+PYTHONPATH=. .venv/bin/python -m uvicorn backend.main:app --reload --port 8000
+
+# Terminal 2: Frontend
+cd frontend && npm run dev
 ```
 
-See [EVALUATION.md](evals/EVALUATION.md) for methodology and honest reflection.
+Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+### 4. Run the Evaluation Harness
+
+```bash
+PYTHONPATH=. .venv/bin/python backend/evals/evaluate.py
+```
+
+This runs 20 test cases, scores them with an LLM-as-a-judge, and prints a scorecard. Results are appended to `backend/evals/eval_history.csv`.
 
 ---
 
-## Known Limitations
+## 🎯 Key Features
 
-1. **flatlib accuracy** — flatlib uses the Swiss Ephemeris under the hood but may have precision limits for dates far from the present epoch. For production use, consider validating against a reference ephemeris.
-
-2. **Geocoding rate limits** — Nominatim (via geopy) has a 1 request/second policy. The agent caches results per session but does not persist across restarts.
-
-3. **RAG corpus size** — The curated astrology notes are intentionally small (~20 documents). A production system would benefit from a larger, professionally curated knowledge base.
-
-4. **Single-session state** — The current implementation holds state in memory per session. There is no persistence layer; restarting the server clears all sessions.
-
-5. **No authentication** — This is a take-home demo. There is no user auth, rate limiting, or multi-tenancy.
-
-6. **LLM dependency** — All reasoning flows through Groq/Llama. If the API is down or rate-limited, the agent cannot function. No fallback LLM is configured.
-
-7. **Vedic vs Western** — The agent primarily uses Western tropical astrology via flatlib. Vedic (sidereal) support is not yet implemented but could be added via the ayanamsa correction in flatlib.
+| Feature | Implementation |
+|---------|---------------|
+| **Token-by-token streaming** | SSE via `astream_events(v2)` → React `ReadableStream` |
+| **Visible tool activity** | `on_tool_start` / `on_tool_end` events render a live pill UI |
+| **Typing animation** | Framer Motion bouncing dots while waiting for first token |
+| **Conversation persistence** | MongoDB checkpointer + `/api/chat/history/:session_id` |
+| **Cross-session memory** | User profiles stored in MongoDB; birth details recalled on return |
+| **Auth system** | JWT-based sign-in/sign-up with bcrypt password hashing |
+| **Birth chart visualization** | Interactive SVG rendering of planetary positions and houses |
+| **Safety guardrails** | Intent router blocks off-topic; system prompt prevents medical/financial advice |
+| **Graceful error recovery** | UI detects empty streams and shows a fallback message |
 
 ---
 
-## License
+## 🛡️ Safety & Guardrails
 
-This project was built as a take-home assignment for Aradhana. Not for redistribution.
-# aradhana_life
+The agent implements layered safety:
+
+1. **Intent Router (Layer 1):** Classifies every message. Off-topic requests (code, car repair, translations) are intercepted before reaching the Reasoner.
+2. **System Prompt (Layer 2):** Explicitly instructs the LLM to never present readings as medical, financial, or legal certainty.
+3. **Evaluation Tests (Layer 3):** The golden set includes adversarial jailbreaks and safety edge cases, continuously verified.
+
+---
+
+## 📁 Project Structure
+
+```
+aradhana_life/
+├── backend/
+│   ├── api/
+│   │   ├── auth.py              # JWT auth endpoints
+│   │   └── routes.py            # Chat, profile, history endpoints (SSE streaming)
+│   ├── db/
+│   │   └── database.py          # MongoDB connection (motor async)
+│   ├── evals/
+│   │   ├── golden_set.jsonl     # 20 versioned test cases
+│   │   ├── evaluate.py          # One-command evaluation runner
+│   │   └── eval_history.csv     # Historical scorecard log
+│   ├── graph/
+│   │   ├── graph.py             # LangGraph state machine compilation
+│   │   ├── state.py             # AgentState TypedDict
+│   │   └── nodes/
+│   │       ├── reasoner.py      # LLM reasoning node + tool binding
+│   │       ├── router.py        # Intent classifier + conditional routing
+│   │       └── tool_node.py     # LangGraph ToolNode wrapper
+│   ├── rag/
+│   │   └── ...                  # ChromaDB vector store + astrology corpus
+│   ├── tools/
+│   │   ├── geocode_place.py     # Nominatim geocoding
+│   │   ├── compute_birth_chart.py  # Flatlib ephemeris computation
+│   │   ├── get_daily_transits.py   # Current planetary positions
+│   │   └── knowledge_lookup.py     # RAG retrieval tool
+│   └── main.py                  # FastAPI app entry point
+├── frontend/
+│   └── src/
+│       ├── app/
+│       │   ├── page.tsx         # Landing page
+│       │   ├── chat/page.tsx    # Chat page
+│       │   └── layout.tsx       # Root layout
+│       ├── components/
+│       │   ├── ChatWindow.tsx   # Main chat with SSE streaming
+│       │   ├── MessageBubble.tsx # Message rendering + typing dots
+│       │   ├── BirthForm.tsx    # Birth details form with validation
+│       │   ├── ToolActivity.tsx # Live tool-call indicator
+│       │   ├── VedicChart.tsx   # SVG birth chart visualization
+│       │   ├── AuthModal.tsx    # Sign-in / Sign-up modal
+│       │   └── Hero.tsx         # Landing page hero section
+│       └── store/
+│           ├── chatStore.ts     # Zustand chat state management
+│           └── authStore.ts     # Zustand auth state management
+├── EVALUATION.md                # Evaluation analysis & reflection
+├── README.md                    # This file
+└── requirements.txt             # Python dependencies
+```
+
+---
+
+## ⚖️ Trade-offs & Known Limitations
+
+| Decision | Trade-off |
+|----------|-----------|
+| **Groq (free tier)** | Blazing fast inference (~1s latency) but hard 100K tokens/day limit. Production would need a paid tier or OpenAI fallback. |
+| **MemorySaver in evals** | We use in-memory checkpointing during evals for isolation. Production uses MongoDB. |
+| **Single LLM for judge** | We use the same model (LLaMA 3.3) as both agent and judge. Ideally, the judge would be a different, stronger model (e.g., GPT-4o) to avoid self-bias. |
+| **No chart caching** | Each identical birth chart request recomputes from scratch. An LRU cache on `compute_birth_chart` would cut latency significantly. |
+| **Flatlib accuracy** | Flatlib uses the Swiss Ephemeris which is accurate to arcseconds for modern dates, but may diverge for dates before 1800. |
+
+---
+
+## 🏆 Stretch Goals Achieved
+
+- ✅ **Memory across sessions:** The agent recalls the user's birth chart without re-asking (stored in MongoDB profiles).
+- ✅ **Graceful failure handling:** The UI detects API timeouts/rate limits and shows a warm fallback message instead of hanging.
+- ✅ **All 4 tools implemented** (assignment required only 3).
+
+---
+
+## 📬 Submission
+
+**Author:** Swagato Bauri  
+**Assignment:** AstroAgent — Aradhana Internship 2026

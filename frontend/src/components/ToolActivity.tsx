@@ -9,18 +9,21 @@ export default function ToolActivity() {
 
   const getToolMessage = (tool: string) => {
     switch(tool) {
-      case 'geocode_place': return "✨ Resolving location coordinates...";
-      case 'compute_birth_chart': return "✨ Aligning the stars and computing chart...";
-      case 'get_daily_transits': return "✨ Reading current planetary transits...";
-      case 'knowledge_lookup': return "✨ Consulting ancient knowledge texts...";
-      default: return `✨ Using tool: ${tool}...`;
+      case 'geocode_place': return "Resolving coordinates · geopy";
+      case 'compute_birth_chart': return "Computing birth chart · flatlib";
+      case 'get_daily_transits': return "Fetching today's transits · flatlib";
+      case 'knowledge_lookup': return "Querying ancient texts · chromadb";
+      default: return `Using tool · ${tool}`;
     }
   }
 
   return (
-    <div className="flex justify-start my-2">
-      <div className="p-2 text-sm bg-purple-100 text-purple-800 rounded-full animate-pulse">
-        {getToolMessage(activeTool)}
+    <div className="flex justify-start my-4">
+      <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-full shadow-sm">
+        <div className="w-2.5 h-2.5 border-[1.5px] border-brand-purple border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wide">
+          {getToolMessage(activeTool)}
+        </span>
       </div>
     </div>
   );
