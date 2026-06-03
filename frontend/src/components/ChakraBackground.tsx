@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 export default function ChakraBackground() {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-8 opacity-40 pointer-events-none select-none relative">
+    <div className="w-full h-full flex flex-col items-center justify-center p-8 opacity-80 pointer-events-none select-none relative">
       
       {/* Background glow to make it stand out against white */}
       <div className="absolute inset-0 bg-gradient-to-b from-brand-gold/5 via-transparent to-brand-gold/5 rounded-full blur-3xl scale-150"></div>
@@ -24,7 +24,7 @@ export default function ChakraBackground() {
 
         {/* Orbit Ring 1 */}
         <motion.div 
-          className="absolute inset-4 rounded-full border border-brand-gold/20"
+          className="absolute inset-4 rounded-full border-2 border-brand-gold/40"
           animate={{ rotate: 360 }}
           transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
         >
@@ -34,7 +34,7 @@ export default function ChakraBackground() {
 
         {/* Orbit Ring 2 */}
         <motion.div 
-          className="absolute inset-12 rounded-full border border-dashed border-brand-gold/30"
+          className="absolute inset-12 rounded-full border-2 border-dashed border-brand-gold/50"
           animate={{ rotate: -360 }}
           transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
         >
@@ -45,7 +45,7 @@ export default function ChakraBackground() {
 
         {/* Orbit Ring 3 */}
         <motion.div 
-          className="absolute -inset-4 rounded-full border border-brand-gold/10"
+          className="absolute -inset-4 rounded-full border-[1.5px] border-brand-gold/30"
           animate={{ rotate: 360 }}
           transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
         >
@@ -64,14 +64,14 @@ export default function ChakraBackground() {
           transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
           fill="none"
           stroke="currentColor"
-          strokeWidth="0.5"
+          strokeWidth="1.5"
         >
           {[...Array(12)].map((_, i) => (
             <path
               key={i}
               d="M100 10 C 120 40, 120 70, 100 100 C 80 70, 80 40, 100 10"
               transform={`rotate(${i * 30} 100 100)`}
-              className="opacity-40"
+              className="opacity-70"
             />
           ))}
         </motion.svg>
