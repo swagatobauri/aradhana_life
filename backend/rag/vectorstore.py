@@ -64,6 +64,4 @@ def get_retriever():
     vectorstore = get_vectorstore()
     return vectorstore.as_retriever(search_kwargs={"k": 3})
 
-# Initialize on import so it's ready to go
-if not os.path.exists(DB_DIR) or not os.path.exists(DB_DIR / "index.faiss"):
-    get_vectorstore()
+# Removed eager initialization to allow lazy-loading and prevent DNS errors during container boot.
