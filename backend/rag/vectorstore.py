@@ -9,7 +9,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 # pyrefly: ignore [missing-import]
 from langchain_chroma import Chroma
 # pyrefly: ignore [missing-import]
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceInferenceAPIEmbeddings
 
 # Determine paths
 BASE_DIR = Path(__file__).resolve().parent
@@ -18,7 +18,14 @@ DB_DIR = BASE_DIR / "db"
 
 def get_vectorstore():
     """Initializes and returns the Chroma vector store."""
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    hf_token = os.environ.get("HF_TOKEN")
+    if not hf_token:
+        print("WARNING: HF_TOKEN environment variable is not set. The knowledge_lookup tool will fail.")
+        
+    embeddings = HuggingFaceInferenceAPIEmbeddings(
+        api_key=hf_token or "missing_token", 
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
     
     # If the DB exists, just load it
     if os.path.exists(DB_DIR):
