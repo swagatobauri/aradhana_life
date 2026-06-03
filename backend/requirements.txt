@@ -10,8 +10,8 @@ groq>=0.30.0
 flatlib==0.2.3
 geopy==2.4.1
 timezonefinder==6.5.2
-chromadb==1.5.9
-langchain-chroma==0.1.4
+chromadb
+langchain-chroma
 sse-starlette==1.8.2
 pydantic==2.9.2
 httpx==0.27.2
