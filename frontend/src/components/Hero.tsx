@@ -43,9 +43,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="hidden md:flex items-center gap-8 text-xs tracking-[0.2em] uppercase text-brand-navy/60 font-medium"
         >
-          <a href="#" className="hover:text-brand-orange transition-colors">Natal Chart</a>
-          <a href="#" className="hover:text-brand-orange transition-colors">Daily Insights</a>
-          <a href="#" className="hover:text-brand-orange transition-colors">Philosophy</a>
+          <a href="https://aradhana.life/" className="hover:text-brand-orange transition-colors">Natal Chart</a>
+          <a href="https://aradhana.life/" className="hover:text-brand-orange transition-colors">Daily Insights</a>
+          <a href="https://aradhana.life/" className="hover:text-brand-orange transition-colors">Philosophy</a>
           <div className="w-px h-4 bg-gray-300"></div>
           {mounted ? (
             token ? (
