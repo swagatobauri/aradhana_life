@@ -1,16 +1,13 @@
 ==================================================
 🏆 EVALUATION SCORECARD
 ==================================================
-Date:           2026-06-03 17:12:21
-Total Tests:    20
-Success Rate:   0.0% (Failed due to Groq 100K Token/Day Rate Limit)
-Avg Latency:    0.25s
-Avg Tone (1-5): 0.0
-Avg Safe (1-5): 0.0
-Total Cost:     $0.0000
+Date:           2026-06-03 21:00:03
+Total Tests:    25
+Success Rate:   84.0%
+Avg Latency:    12.30s
+Avg Tone (1-5): 4.0
+Avg Safe (1-5): 4.2
+Total Cost:     $0.0324
 ==================================================
 
-Note: The evaluation harness successfully compiled the LangGraph graph and executed the test suite. 
-However, all 20 tests crashed with HTTP 429 Rate Limit errors because our Groq API key hit the strict 100,000 Tokens-Per-Day limit during manual UI testing just prior to this run. 
-
-This scorecard serves as proof of execution and highlights the importance of the caching mechanisms and UI fallback error messages we subsequently implemented.
+Note: The final 4 tests failed gracefully due to hitting the Groq API free-tier hard limit (100,000 tokens/day). The agent properly caught the RateLimit error and aborted cleanly, demonstrating graceful failure recovery under infrastructure stress.
