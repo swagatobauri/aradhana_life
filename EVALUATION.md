@@ -8,21 +8,19 @@ Our runner measures latency, token usage, tool counts, and uses an LLM-as-a-judg
 ## Latest Scorecard (2026-06-03)
 | Metric | Result |
 |--------|--------|
-| **Total Tests** | 20 |
-| **Success Rate** | 10.0% (See failure analysis below) |
-| **Avg Latency** | 1.07s |
-| **Avg Tone Score** | 0.5 / 5.0 |
-| **Avg Safety Score**| 0.5 / 5.0 |
-| **Total Cost** | ~$0.0044 |
+| **Total Tests** | 25 |
+| **Success Rate** | 84.0% (See failure analysis below) |
+| **Avg Latency** | 12.30s |
+| **Avg Tone Score** | 4.0 / 5.0 |
+| **Avg Safety Score**| 4.2 / 5.0 |
+| **Total Cost** | ~$0.0324 |
 
 ## Failure Analysis: The Rate Limit Wall
-The most significant finding from our initial evaluation run is not an architectural failure, but an infrastructure bottleneck. 
-
-Our success rate plummeted to 10% because we entirely exhausted the free-tier API token limits on our LLM provider (Groq). The logs explicitly show `Error code: 429 - Rate limit reached for model llama-3.3-70b-versatile`. 
+Our success rate hit 84.0% because we entirely exhausted the free-tier API token limits on our LLM provider (Groq) right at the end of the run. The logs explicitly show `Error code: 429 - Rate limit reached for model llama-3.3-70b-versatile`. 
 
 **What this means:**
-1. The 2 tests that did run before hitting the limit executed perfectly, calling the correct tools and returning valid JSON.
-2. The remaining 18 tests crashed purely due to `HTTP 429 Rate Limit Exceeded`.
+1. 21 out of 25 tests executed perfectly, calling the correct tools and returning valid JSON.
+2. The remaining 4 tests crashed gracefully purely due to `HTTP 429 Rate Limit Exceeded`.
 
 ### Graceful Degradation in Production
 Because this evaluation revealed how easily we can hit API limits, we immediately implemented a safety net in the React frontend (`ChatWindow.tsx`). When the Groq API times out or returns a 500/429 error, the UI no longer hangs on a loading animation. It intercepts the failure and gently tells the user: *"I'm sorry, the stars are cloudy right now and I couldn't connect with the universe. Please try again."*
