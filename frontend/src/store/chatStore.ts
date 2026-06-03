@@ -22,7 +22,8 @@ interface ChatState {
   chartData: any | null;
   isGeneratingChart: boolean;
   hasInitialChart: boolean;
-  setBirthDetails: (details: BirthDetails) => void;
+  tokensUsed: number;
+  setBirthDetails: (details: BirthDetails | null) => void;
   setMessages: (messages: Message[]) => void;
   addMessage: (msg: Message) => void;
   updateLastAIMessage: (content: string) => void;
@@ -33,6 +34,7 @@ interface ChatState {
   setChartData: (data: any) => void;
   setIsGeneratingChart: (status: boolean) => void;
   setHasInitialChart: (status: boolean) => void;
+  addTokens: (amount: number) => void;
   resetSession: () => void;
 }
 
@@ -47,6 +49,7 @@ export const useChatStore = create<ChatState>()(
       chartData: null,
       isGeneratingChart: false,
       hasInitialChart: false,
+      tokensUsed: 0,
       setBirthDetails: (details) => set({ birthDetails: details }),
       setMessages: (messages) => set({ messages }),
       addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
@@ -74,12 +77,14 @@ export const useChatStore = create<ChatState>()(
       setChartData: (data) => set({ chartData: data }),
       setIsGeneratingChart: (status) => set({ isGeneratingChart: status }),
       setHasInitialChart: (status) => set({ hasInitialChart: status }),
+      addTokens: (amount) => set((state) => ({ tokensUsed: state.tokensUsed + amount })),
       resetSession: () => set({
         sessionId: Math.random().toString(36).substring(7),
         messages: [],
         chartData: null,
         hasInitialChart: false,
         isGeneratingChart: true,
+        tokensUsed: 0
       })
     }),
     {

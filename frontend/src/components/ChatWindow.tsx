@@ -8,10 +8,11 @@ import VedicChart from './VedicChart'
 
 export default function ChatWindow() {
   const [input, setInput] = useState('')
-  const { sessionId, birthDetails, messages, addMessage, updateLastAIMessage, clearLastAIMessage, removeLastMessage, setActiveTool, setIsTyping, isTyping, setChartData, isGeneratingChart, hasInitialChart, setHasInitialChart, setIsGeneratingChart } = useChatStore()
+  const { sessionId, birthDetails, messages, addMessage, updateLastAIMessage, clearLastAIMessage, removeLastMessage, setActiveTool, setIsTyping, isTyping, setChartData, isGeneratingChart, hasInitialChart, setHasInitialChart, setIsGeneratingChart, addTokens } = useChatStore()
   const { userId } = useAuthStore()
 
   const initialFetchTriggered = useRef(false);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   // Automatically trigger the initial chart generation
   useEffect(() => {
@@ -31,9 +32,10 @@ export default function ChatWindow() {
     }
     addMessage({ id: `ai-${Date.now()}-${Math.random()}`, role: 'ai', content: '' }) // Placeholder for streaming
     setIsTyping(true)
+    addTokens(50) // Base tokens for the user prompt
 
     try {
-      const response = await fetch('http://localhost:8000/api/chat', {
+      const response = await fetch(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -73,6 +75,7 @@ export default function ChatWindow() {
                 }
               } else if (data.type === 'content') {
                 updateLastAIMessage(data.content);
+                addTokens(2); // Visually update the API Dashboard gauge in real-time
               } else if (data.type === 'error') {
                 console.error("Agent error:", data.content);
               }
@@ -114,8 +117,8 @@ export default function ChatWindow() {
   }
 
   return (
-    <div className="flex flex-col h-[85vh] w-full max-w-3xl mx-auto bg-brand-bg overflow-hidden border border-gray-200 shadow-sm rounded-sm">
-      <div className="flex-1 overflow-y-auto p-6 bg-brand-bg">
+    <div className="flex flex-col h-full w-full bg-transparent overflow-hidden">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-20 no-scrollbar">
         <VedicChart />
         {messages.map((m, index) => {
           // Hide old 'ghost' messages that got stuck empty in local storage from previous errors
@@ -127,19 +130,21 @@ export default function ChatWindow() {
         <ToolActivity />
       </div>
       
-      <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-gray-200 flex gap-4 items-center">
-        <input 
-          type="text" 
+      <div className="px-4 md:px-8 pb-8 pt-4 bg-gradient-to-t from-[#FCF9F2] via-[#FCF9F2] to-transparent">
+        <form onSubmit={handleSubmit} className="p-2 bg-white border border-brand-gold/30 shadow-lg flex gap-3 items-center rounded-full overflow-hidden">
+          <input 
+            type="text" 
           value={input} 
           onChange={(e) => setInput(e.target.value)} 
           placeholder="Ask the stars about your path..."
-          className="flex-1 p-3 bg-gray-50 border border-gray-200 text-brand-navy placeholder-gray-400 focus:outline-none focus:border-brand-purple transition-colors text-sm rounded-sm"
-          disabled={isTyping}
-        />
-        <button type="submit" disabled={isTyping} className="px-6 py-3 bg-brand-navy text-brand-lavender text-sm uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50 rounded-sm font-medium">
-          Send
-        </button>
-      </form>
+            className="flex-1 p-3 bg-transparent text-brand-navy placeholder-gray-400 focus:outline-none transition-colors text-sm pl-4"
+            disabled={isTyping}
+          />
+          <button type="submit" disabled={isTyping} className="px-6 py-3 bg-brand-navy text-brand-lavender text-xs uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50 rounded-full font-medium shadow-md">
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
