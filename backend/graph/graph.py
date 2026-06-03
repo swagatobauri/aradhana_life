@@ -54,33 +54,22 @@ def create_graph():
     # Tools go back to the reasoner to evaluate output
     workflow.add_edge("tools", "reasoner")
     
-    # 5. Add Checkpointer
-    # Try to use MongoDB for persistent memory, fallback to MemorySaver
-    # pyrefly: ignore [missing-import]
-    from langgraph.checkpoint.mongodb import MongoDBSaver
-    # pyrefly: ignore [missing-import]
-    from pymongo import MongoClient
-    import os
-    
-    mongo_uri = os.getenv("MONGODB_URI")
-    memory = MemorySaver()  # default fallback
-    if mongo_uri:
-        try:
-            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
-            # Force a connection test to catch auth errors early
-            client.admin.command("ping")
-            memory = MongoDBSaver(client)
-            print("✅ Using MongoDBSaver for persistent memory.")
-        except Exception as e:
-            print(f"⚠️  MongoDB checkpointer failed ({e}). Falling back to MemorySaver.")
-            memory = MemorySaver()
-    else:
-        print("ℹ️  MONGODB_URI not set. Using in-memory MemorySaver.")
+    # 5. Use in-memory checkpointer for fast startup
+    # MongoDB checkpointer is initialized separately via init_checkpointer()
+    memory = MemorySaver()
     
     # Compile the graph
     app = workflow.compile(checkpointer=memory)
     
     return app
 
-# Expose compiled app as module-level variable for easy import
-app = create_graph()
+
+_graph_app = None
+
+def get_graph():
+    """Returns the compiled graph, creating it lazily on first call."""
+    global _graph_app
+    if _graph_app is None:
+        _graph_app = create_graph()
+    return _graph_app
+

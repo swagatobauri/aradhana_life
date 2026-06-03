@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from typing import Optional, Dict, Any
 # pyrefly: ignore [missing-import]
 from langchain_core.messages import HumanMessage, AIMessageChunk
-from backend.graph.graph import app as graph_app
+from backend.graph.graph import get_graph
 from backend.api.limiter import limiter
 
 router = APIRouter()
@@ -28,7 +28,7 @@ async def event_generator(request: ChatRequest):
     config = {"configurable": {"thread_id": request.session_id}}
     
     try:
-        async for event in graph_app.astream_events(inputs, config=config, version="v2"):
+        async for event in get_graph().astream_events(inputs, config=config, version="v2"):
             kind = event["event"]
             
             if kind == "on_chat_model_stream":
@@ -64,7 +64,7 @@ async def chat_endpoint(request: Request, payload: ChatRequest):
 async def get_chat_history(session_id: str):
     config = {"configurable": {"thread_id": session_id}}
     try:
-        state = await graph_app.aget_state(config)
+        state = await get_graph().aget_state(config)
         if not state or not state.values:
             return {"messages": []}
             
