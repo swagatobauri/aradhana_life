@@ -4,52 +4,79 @@ import { motion } from 'framer-motion'
 
 export default function ChakraBackground() {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-8 opacity-20 pointer-events-none select-none">
-      <motion.svg
-        viewBox="0 0 200 200"
-        className="w-full max-w-[400px] aspect-square text-brand-gold"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.5"
-      >
-        {/* Outer Circle */}
-        <circle cx="100" cy="100" r="90" />
-        <circle cx="100" cy="100" r="85" />
+    <div className="w-full h-full flex flex-col items-center justify-center p-8 opacity-40 pointer-events-none select-none relative">
+      
+      {/* Background glow to make it stand out against white */}
+      <div className="absolute inset-0 bg-gradient-to-b from-brand-gold/5 via-transparent to-brand-gold/5 rounded-full blur-3xl scale-150"></div>
+
+      <div className="w-full max-w-[400px] aspect-square relative text-brand-gold">
         
-        {/* Petals */}
-        {[...Array(12)].map((_, i) => (
-          <path
-            key={i}
-            d="M100 15 C 120 40, 120 70, 100 100 C 80 70, 80 40, 100 15"
-            transform={`rotate(${i * 30} 100 100)`}
-            className="opacity-60"
-          />
-        ))}
-        
-        {/* Inner Mandala */}
-        {[...Array(24)].map((_, i) => (
-          <line
-            key={`l1-${i}`}
-            x1="100"
-            y1="15"
-            x2="100"
-            y2="30"
-            transform={`rotate(${i * 15} 100 100)`}
-          />
-        ))}
-        
-        {/* Deep Center */}
-        <circle cx="100" cy="100" r="20" className="opacity-80" />
-        {[...Array(8)].map((_, i) => (
-          <path
-            key={`inner-${i}`}
-            d="M100 80 C 105 90, 105 100, 100 100 C 95 100, 95 90, 100 80"
-            transform={`rotate(${i * 45} 100 100)`}
-          />
-        ))}
-      </motion.svg>
+        {/* Central Logo / Sun */}
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <motion.div 
+            className="w-16 h-16 rounded-full border border-brand-gold/50 flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)] bg-white/50 backdrop-blur-sm"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          >
+            <img src="/logo.png" alt="Center" className="w-10 h-10 object-contain opacity-80" />
+          </motion.div>
+        </div>
+
+        {/* Orbit Ring 1 */}
+        <motion.div 
+          className="absolute inset-4 rounded-full border border-brand-gold/20"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+        >
+          {/* Orbital Node */}
+          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-brand-orange/40 shadow-[0_0_10px_rgba(255,140,66,0.5)] border border-brand-orange/60" />
+        </motion.div>
+
+        {/* Orbit Ring 2 */}
+        <motion.div 
+          className="absolute inset-12 rounded-full border border-dashed border-brand-gold/30"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+        >
+          {/* Orbital Node */}
+          <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-3 h-3 rounded-full bg-brand-navy/30 shadow-[0_0_10px_rgba(10,25,47,0.5)] border border-brand-navy/50" />
+          <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-3 h-3 rounded-full bg-brand-navy/30 shadow-[0_0_10px_rgba(10,25,47,0.5)] border border-brand-navy/50" />
+        </motion.div>
+
+        {/* Orbit Ring 3 */}
+        <motion.div 
+          className="absolute -inset-4 rounded-full border border-brand-gold/10"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
+        >
+          {/* Orbital Nodes */}
+          <div className="absolute -bottom-2 left-1/4 w-5 h-5 rounded-full bg-brand-purple/20 shadow-[0_0_15px_rgba(107,76,154,0.4)] border border-brand-purple/40 flex items-center justify-center">
+             <div className="w-1 h-1 bg-white rounded-full opacity-50" />
+          </div>
+          <div className="absolute -top-2 right-1/4 w-2 h-2 rounded-full bg-brand-orange/50" />
+        </motion.div>
+
+        {/* Complex geometric SVG overlay slowly rotating */}
+        <motion.svg
+          viewBox="0 0 200 200"
+          className="w-full h-full absolute inset-0 opacity-30"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.5"
+        >
+          {[...Array(12)].map((_, i) => (
+            <path
+              key={i}
+              d="M100 10 C 120 40, 120 70, 100 100 C 80 70, 80 40, 100 10"
+              transform={`rotate(${i * 30} 100 100)`}
+              className="opacity-40"
+            />
+          ))}
+        </motion.svg>
+
+      </div>
     </div>
   )
 }

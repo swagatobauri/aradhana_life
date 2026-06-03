@@ -15,8 +15,8 @@ export default function ApiDashboard() {
     <div className="w-full flex flex-col gap-6">
       {/* Logo Placement */}
       <div className="flex items-center gap-3 px-2">
-        <div className="w-10 h-10 rounded-full bg-brand-navy flex items-center justify-center p-1.5">
-          <img src="/logo.png" alt="Aradhana Life" className="w-full h-full object-contain invert brightness-200" />
+        <div className="w-12 h-12 flex items-center justify-center p-1">
+          <img src="/logo.png" alt="Aradhana Life" className="w-full h-full object-contain" />
         </div>
         <div>
           <h1 className="font-serif text-xl text-brand-navy leading-tight">Aradhana</h1>
