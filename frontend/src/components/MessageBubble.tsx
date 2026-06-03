@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 
 export default function MessageBubble({ role, content }: { role: 'user' | 'ai', content: string }) {
   const isUser = role === 'user';
@@ -40,7 +41,19 @@ export default function MessageBubble({ role, content }: { role: 'user' | 'ai', 
               />
             </div>
           ) : (
-            <p className="whitespace-pre-wrap">{content}</p>
+            <div className="markdown-body">
+              <ReactMarkdown
+                components={{
+                  p: ({node, ...props}) => <p className="mb-3 last:mb-0" {...props} />,
+                  strong: ({node, ...props}) => <strong className="font-semibold text-brand-purple" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc ml-5 mb-3 space-y-1" {...props} />,
+                  ol: ({node, ...props}) => <ol className="list-decimal ml-5 mb-3 space-y-1" {...props} />,
+                  li: ({node, ...props}) => <li className="" {...props} />
+                }}
+              >
+                {content}
+              </ReactMarkdown>
+            </div>
           )}
         </div>
       </div>
