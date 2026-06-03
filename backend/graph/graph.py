@@ -63,13 +63,19 @@ def create_graph():
     import os
     
     mongo_uri = os.getenv("MONGODB_URI")
+    memory = MemorySaver()  # default fallback
     if mongo_uri:
-        # Initialize motor client for checkpointer
-        # Note: langgraph will create a 'checkpoints' database automatically
-        client = MongoClient(mongo_uri)
-        memory = MongoDBSaver(client)
+        try:
+            client = MongoClient(mongo_uri, serverSelectionTimeoutMS=5000)
+            # Force a connection test to catch auth errors early
+            client.admin.command("ping")
+            memory = MongoDBSaver(client)
+            print("✅ Using MongoDBSaver for persistent memory.")
+        except Exception as e:
+            print(f"⚠️  MongoDB checkpointer failed ({e}). Falling back to MemorySaver.")
+            memory = MemorySaver()
     else:
-        memory = MemorySaver()
+        print("ℹ️  MONGODB_URI not set. Using in-memory MemorySaver.")
     
     # Compile the graph
     app = workflow.compile(checkpointer=memory)
