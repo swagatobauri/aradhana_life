@@ -6,6 +6,7 @@ import bcrypt
 from datetime import datetime, timedelta
 # pyrefly: ignore [missing-import]
 from fastapi import APIRouter, HTTPException, Depends, Request
+# pyrefly: ignore [missing-import]
 from pydantic import BaseModel
 from backend.db.database import get_database
 from backend.api.limiter import limiter

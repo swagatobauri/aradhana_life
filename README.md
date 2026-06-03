@@ -258,7 +258,6 @@ aradhana_life/
 | **Groq (free tier)** | Blazing fast inference (~1s latency) but hard 100K tokens/day limit. Production would need a paid tier or OpenAI fallback. |
 | **MemorySaver in evals** | We use in-memory checkpointing during evals for isolation. Production uses MongoDB. |
 | **Single LLM for judge** | We use the same model (LLaMA 3.3) as both agent and judge. Ideally, the judge would be a different, stronger model (e.g., GPT-4o) to avoid self-bias. |
-| **No chart caching** | Each identical birth chart request recomputes from scratch. An LRU cache on `compute_birth_chart` would cut latency significantly. |
 | **Flatlib accuracy** | Flatlib uses the Swiss Ephemeris which is accurate to arcseconds for modern dates, but may diverge for dates before 1800. |
 
 ---
@@ -266,6 +265,7 @@ aradhana_life/
 ## 🏆 Stretch Goals Achieved
 
 - ✅ **Memory across sessions:** The agent recalls the user's birth chart without re-asking (stored in MongoDB profiles).
+- ✅ **Chart Caching:** The `compute_birth_chart` and `geocode_place` tools are wrapped in an LRU cache, drastically cutting API costs and latency for identical chart requests.
 - ✅ **Graceful failure handling:** The UI detects API timeouts/rate limits and shows a warm fallback message instead of hanging.
 - ✅ **All 4 tools implemented** (assignment required only 3).
 

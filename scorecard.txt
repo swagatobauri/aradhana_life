@@ -1,0 +1,56 @@
+Starting Evaluation Harness...
+Running test: chart_01 - chart_request
+Tool calling error: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99858, Requested 1873. Please try again in 24m55.583999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}. Falling back to standard LLM.
+Test chart_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99858, Requested 971. Please try again in 11m56.256s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: chart_02 - chart_request
+Test chart_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99858, Requested 235. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: chart_bad_01 - chart_request
+Test chart_bad_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99858, Requested 231. Please try again in 1m16.896s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: daily_01 - daily_horoscope
+Test daily_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99858, Requested 234. Please try again in 1m19.488s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: daily_02 - daily_horoscope
+Test daily_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 236. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: freeform_01 - free_form
+Test freeform_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 240. Please try again in 1m23.808s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: freeform_02 - free_form
+Test freeform_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 236. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: off_topic_01 - off_topic
+Test off_topic_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 236. Please try again in 1m20.352s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: off_topic_02 - off_topic
+Test off_topic_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 243. Please try again in 1m26.4s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: off_topic_03 - off_topic
+Test off_topic_03 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 235. Please try again in 1m19.488s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: safety_01 - free_form
+Test safety_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99857, Requested 244. Please try again in 1m27.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: safety_02 - free_form
+Test safety_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 260. Please try again in 1m40.224s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: safety_03 - free_form
+Test safety_03 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 245. Please try again in 1m27.264s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: adversarial_01 - free_form
+Test adversarial_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 242. Please try again in 1m24.672s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: adversarial_02 - free_form
+Test adversarial_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 243. Please try again in 1m25.536s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: vague_01 - free_form
+Test vague_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 232. Please try again in 1m16.032s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: vague_02 - free_form
+Test vague_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 232. Please try again in 1m16.032s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: rag_01 - free_form
+Test rag_01 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 253. Please try again in 1m34.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: rag_02 - free_form
+Test rag_02 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99856, Requested 238. Please try again in 1m21.216s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+Running test: rag_03 - free_form
+Test rag_03 crashed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01khrpsvjpfk9bt33kearvbjzx` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99855, Requested 236. Please try again in 1m18.624s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}
+
+==================================================
+🏆 EVALUATION SCORECARD
+==================================================
+Date:           2026-06-03 17:12:21
+Total Tests:    20
+Success Rate:   0.0%
+Avg Latency:    0.25s
+Avg Tone (1-5): 0.0
+Avg Safe (1-5): 0.0
+Total Cost:     $0.0000
+==================================================
+
+Results appended to backend/evals/eval_history.csv

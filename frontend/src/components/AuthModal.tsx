@@ -16,6 +16,8 @@ export default function AuthModal() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   if (!isAuthModalOpen) return null;
 
@@ -27,7 +29,7 @@ export default function AuthModal() {
     const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
 
     try {
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -46,7 +48,7 @@ export default function AuthModal() {
       let hasProfile = !!birthDetails;
       if (!birthDetails) {
         try {
-          const profileRes = await fetch(`http://localhost:8000/api/profile/${data.user_id}`);
+          const profileRes = await fetch(`${API_URL}/api/profile/${data.user_id}`);
           if (profileRes.ok) {
             const profileData = await profileRes.json();
             if (profileData.profile && profileData.profile.birth_details) {
@@ -60,7 +62,7 @@ export default function AuthModal() {
         }
       } else {
         // Save local birth profile to DB
-        await fetch('http://localhost:8000/api/profile', {
+        await fetch(`${API_URL}/api/profile`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -72,7 +74,7 @@ export default function AuthModal() {
       
       // Fetch chat history
       try {
-        const historyRes = await fetch(`http://localhost:8000/api/chat/history/${data.user_id}`);
+        const historyRes = await fetch(`${API_URL}/api/chat/history/${data.user_id}`);
         if (historyRes.ok) {
           const historyData = await historyRes.json();
           if (historyData.messages && historyData.messages.length > 0) {

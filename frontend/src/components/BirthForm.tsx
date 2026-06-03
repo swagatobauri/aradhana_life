@@ -12,6 +12,8 @@ export default function BirthForm() {
   const { token, userId, setAuthModalOpen } = useAuthStore();
   const [hasServerProfile, setHasServerProfile] = useState(false);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
   // If the user logs in on this page, fetch their profile if we don't have one locally
   useEffect(() => {
@@ -20,7 +22,7 @@ export default function BirthForm() {
         setHasServerProfile(true);
       } else {
         setIsLoadingProfile(true);
-        fetch(`http://localhost:8000/api/profile/${userId}`)
+        fetch(`${API_URL}/api/profile/${userId}`)
           .then(res => res.json())
           .then(data => {
             if (data.profile && data.profile.birth_details) {
@@ -40,7 +42,7 @@ export default function BirthForm() {
   const handleContinue = async () => {
     if (userId) {
       try {
-        const res = await fetch(`http://localhost:8000/api/chat/history/${userId}`);
+        const res = await fetch(`${API_URL}/api/chat/history/${userId}`);
         if (res.ok) {
           const data = await res.json();
           if (data.messages) {

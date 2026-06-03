@@ -30,8 +30,8 @@ Because this evaluation revealed how easily we can hit API limits, we immediatel
 ## Next Steps & Improvements
 If we had more time and resources, the immediate next steps would be:
 1. **Upgrade Infrastructure:** Move to a paid API tier to increase the Tokens-Per-Day (TPD) limit.
-2. **Implement Caching:** Wrap our deterministic tools (`geocode_place` and `compute_birth_chart`) in an LRU Cache or Redis. If multiple users ask for the daily transits for New York, we shouldn't burn LLM tokens geocoding "New York" every single time.
-3. **Semantic Caching:** Cache common LLM responses for daily transits to avoid re-generating the exact same reading for users with identical ascendants on the same day.
+2. **Semantic Caching:** We successfully implemented function-level caching for the determinisic tools (`geocode_place` and `compute_birth_chart`), but the next step is semantic caching for the LLM responses. If two users with identical ascendants ask for daily transits, we shouldn't burn LLM tokens re-generating the exact same reading.
+3. **Second Agent Handoff:** Implementing a specialized 'Editor' node in LangGraph to enforce a softer tone on all outputs before presenting them to the user.
 
 ## Conclusion
-The evaluation harness proved highly valuable. It demonstrated that our agentic routing works flawlessly, but also exposed the critical reality of building production LLM apps: you are always at the mercy of your provider's rate limits. Handling those limits gracefully in the UI is just as important as the agent logic itself.
+The evaluation harness proved highly valuable. It demonstrated that our agentic routing works flawlessly, but also exposed the critical reality of building production LLM apps: you are always at the mercy of your provider's rate limits. Handling those limits gracefully in the UI, and aggressively caching backend tools, is just as important as the agent logic itself.
