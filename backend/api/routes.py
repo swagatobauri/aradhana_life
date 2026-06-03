@@ -1,6 +1,6 @@
 import json
 # pyrefly: ignore [missing-import]
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 # pyrefly: ignore [missing-import]
 from fastapi.responses import StreamingResponse
 # pyrefly: ignore [missing-import]
@@ -9,6 +9,7 @@ from typing import Optional, Dict, Any
 # pyrefly: ignore [missing-import]
 from langchain_core.messages import HumanMessage, AIMessageChunk
 from backend.graph.graph import app as graph_app
+from backend.api.limiter import limiter
 
 router = APIRouter()
 
@@ -55,8 +56,9 @@ async def event_generator(request: ChatRequest):
         yield f"data: {json.dumps({'type': 'error', 'content': str(e)})}\n\n"
 
 @router.post("/chat")
-async def chat_endpoint(request: ChatRequest):
-    return StreamingResponse(event_generator(request), media_type="text/event-stream")
+@limiter.limit("15/minute")
+async def chat_endpoint(request: Request, payload: ChatRequest):
+    return StreamingResponse(event_generator(payload), media_type="text/event-stream")
 
 @router.get("/chat/history/{session_id}")
 async def get_chat_history(session_id: str):

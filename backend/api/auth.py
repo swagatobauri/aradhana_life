@@ -5,10 +5,10 @@ import jwt
 import bcrypt
 from datetime import datetime, timedelta
 # pyrefly: ignore [missing-import]
-from fastapi import APIRouter, HTTPException, Depends
-# pyrefly: ignore [missing-import]
+from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel
 from backend.db.database import get_database
+from backend.api.limiter import limiter
 
 router = APIRouter()
 JWT_SECRET = os.getenv("JWT_SECRET", "super-secret-aradhana-key")
@@ -28,7 +28,8 @@ def create_access_token(data: dict):
     return jwt.encode(to_encode, JWT_SECRET, algorithm="HS256")
 
 @router.post("/register")
-async def register(user: UserRegister):
+@limiter.limit("5/minute")
+async def register(request: Request, user: UserRegister):
     db = get_database()
     if db is None:
         raise HTTPException(status_code=500, detail="Database not connected")
@@ -51,7 +52,8 @@ async def register(user: UserRegister):
     return {"token": token, "user_id": user_id, "email": user.email}
 
 @router.post("/login")
-async def login(user: UserLogin):
+@limiter.limit("10/minute")
+async def login(request: Request, user: UserLogin):
     db = get_database()
     if db is None:
         raise HTTPException(status_code=500, detail="Database not connected")
