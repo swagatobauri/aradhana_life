@@ -12,8 +12,8 @@ INTENT_PROMPT = """You are an intent classifier for an astrology app.
 Classify the user's latest message into EXACTLY ONE of the following intents:
 - chart_request (User is asking about their birth chart, zodiac sign, ascendant, etc.)
 - daily_horoscope (User is asking about today's transits, current planetary positions, or their daily reading)
-- free_form (User is asking a general astrology question that doesn't fit the above)
-- off_topic (User is asking about something completely unrelated to astrology, spirituality, or their life journey. E.g. coding, fixing a car, unrelated trivia).
+- free_form (User is asking a general astrology question, or a standard conversational greeting like "hi", "how are you", or "namaste")
+- off_topic (User is asking about something completely unrelated to astrology, spirituality, or their life journey. E.g. coding, fixing a car, unrelated trivia. DO NOT classify basic conversational greetings as off_topic).
 
 Return ONLY a valid JSON object with a single key "intent" containing one of the 4 strings above. Do not include markdown formatting or backticks. Example: {"intent": "chart_request"}
 """
