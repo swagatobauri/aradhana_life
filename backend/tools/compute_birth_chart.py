@@ -29,21 +29,10 @@ def convert_lat_lng_to_geopos(lat: float, lng: float) -> str:
     
     return f"{lat_str} {lng_str}"
 
-@tool
-def compute_birth_chart(date: str, time: str, lat: float, lng: float, timezone: str) -> str:
-    """
-    Computes real planetary positions and house cusps using flatlib.
-    
-    Args:
-        date: ISO format date (YYYY-MM-DD).
-        time: 24-hour time string (HH:MM).
-        lat: Latitude of the birth place.
-        lng: Longitude of the birth place.
-        timezone: IANA timezone string.
-        
-    Returns:
-        JSON string containing exact planetary positions and houses.
-    """
+import functools
+
+@functools.lru_cache(maxsize=256)
+def _compute_birth_chart_cached(date: str, time: str, lat: float, lng: float, timezone: str) -> str:
     try:
         # Date and time string needs to be formatted for flatlib Datetime
         # Expected format for flatlib Datetime is 'YYYY/MM/DD'
@@ -123,3 +112,20 @@ def compute_birth_chart(date: str, time: str, lat: float, lng: float, timezone: 
         return json.dumps(result)
     except Exception as e:
         return f'{{"error": "Birth chart computation failed: {str(e)}"}}'
+
+@tool
+def compute_birth_chart(date: str, time: str, lat: float, lng: float, timezone: str) -> str:
+    """
+    Computes real planetary positions and house cusps using flatlib.
+    
+    Args:
+        date: ISO format date (YYYY-MM-DD).
+        time: 24-hour time string (HH:MM).
+        lat: Latitude of the birth place.
+        lng: Longitude of the birth place.
+        timezone: IANA timezone string.
+        
+    Returns:
+        JSON string containing exact planetary positions and houses.
+    """
+    return _compute_birth_chart_cached(date, time, lat, lng, timezone)

@@ -8,18 +8,10 @@ from geopy.geocoders import Nominatim
 # pyrefly: ignore [missing-import]
 from timezonefinder import TimezoneFinder
 
-@tool
-def geocode_place(place_name: str) -> str:
-    """
-    Geocodes a place name (e.g. "Mumbai, India", "New York") into 
-    latitude, longitude, and IANA timezone.
-    
-    Args:
-        place_name: The name of the city, region, or place.
-        
-    Returns:
-        A JSON string containing lat, lng, and timezone, or an error message.
-    """
+import functools
+
+@functools.lru_cache(maxsize=128)
+def _geocode_place_cached(place_name: str) -> str:
     try:
         # Nominatim requires a user_agent
         geolocator = Nominatim(user_agent="aradhana_life_agent")
@@ -46,3 +38,17 @@ def geocode_place(place_name: str) -> str:
         })
     except Exception as e:
         return f'{{"error": "Geocoding failed: {str(e)}"}}'
+
+@tool
+def geocode_place(place_name: str) -> str:
+    """
+    Geocodes a place name (e.g. "Mumbai, India", "New York") into 
+    latitude, longitude, and IANA timezone.
+    
+    Args:
+        place_name: The name of the city, region, or place.
+        
+    Returns:
+        A JSON string containing lat, lng, and timezone, or an error message.
+    """
+    return _geocode_place_cached(place_name)
