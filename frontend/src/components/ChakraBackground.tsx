@@ -13,13 +13,9 @@ export default function ChakraBackground() {
         
         {/* Central Logo / Sun */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <motion.div 
-            className="w-16 h-16 rounded-full border border-brand-gold/50 flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)] bg-white/50 backdrop-blur-sm"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          >
+          <div className="w-16 h-16 rounded-full border border-brand-gold/50 flex items-center justify-center shadow-[0_0_30px_rgba(212,175,55,0.3)] bg-white/50 backdrop-blur-sm">
             <img src="/logo.png" alt="Center" className="w-10 h-10 object-contain opacity-80" />
-          </motion.div>
+          </div>
         </div>
 
         {/* Orbit Ring 1 */}
