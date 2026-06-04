@@ -53,6 +53,9 @@ export default function BirthForm() {
         console.error("Failed to load history", e);
       }
     }
+    // Force the full-screen animation off to clear any stuck state 
+    // from them clicking "Generate Chart" while logged out.
+    useChatStore.getState().setIsGeneratingChart(false);
     router.push('/chat');
   };
 
