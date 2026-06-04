@@ -63,16 +63,28 @@ export default function BirthForm() {
     // Completely wipe old chat messages and IDs, and reset flags
     resetSession();
     
-    setBirthDetails({
+    const newDetails = {
       date: formData.get('date') as string,
       time: formData.get('time') as string,
       place: formData.get('place') as string,
-    });
+    };
+    
+    setBirthDetails(newDetails);
     
     if (!token) {
       setAuthModalOpen(true);
       return;
     }
+    
+    // Save to DB if already logged in
+    fetch(`${API_URL}/api/profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: userId,
+        birth_details: newDetails
+      })
+    }).catch(err => console.error("Failed to sync profile:", err));
     
     router.push('/chat');
   };

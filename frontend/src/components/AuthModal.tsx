@@ -45,9 +45,12 @@ export default function AuthModal() {
       setAuth(data.token, data.user_id, data.email);
       setAuthModalOpen(false);
       
+      // Always get the freshest state, bypass React closure staleness
+      const currentBirthDetails = useChatStore.getState().birthDetails;
+      
       // If we don't have birthDetails locally, fetch them from the backend
-      let hasProfile = !!birthDetails;
-      if (!birthDetails) {
+      let hasProfile = !!currentBirthDetails;
+      if (!currentBirthDetails) {
         try {
           const profileRes = await fetch(`${API_URL}/api/profile/${data.user_id}`);
           if (profileRes.ok) {
@@ -68,7 +71,7 @@ export default function AuthModal() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             user_id: data.user_id,
-            birth_details: birthDetails
+            birth_details: currentBirthDetails
           })
         }).catch(err => console.error("Failed to sync profile:", err));
       }
