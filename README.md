@@ -179,3 +179,14 @@ source .venv/bin/activate
 PYTHONPATH=. python backend/evals/evaluate.py
 ```
 This executes the test suite, evaluates the agent's responses against the golden set, and logs the metrics to `eval_history.csv`.
+
+---
+
+## Known Limitations & Trade-offs
+
+In the interest of honest scoping, here are the known limitations of the current implementation:
+
+1. **Free-Tier API Rate Limits:** The agent relies on Groq's free tier for LLaMA 3.3 70B, which enforces a strict 6,000 Tokens-Per-Minute (TPM) limit. Generating a large birth chart reading followed immediately by a follow-up question often triggers a `429 Rate Limit Exceeded` error. We built a custom frontend fallback UI to gracefully handle this limitation, but in a production environment, a paid tier would resolve this entirely.
+2. **Missing House Systems:** The current `flatlib` implementation uses default house calculation methods. A production astrology app would likely require the ability to toggle between Placidus, Whole Sign, and other house systems.
+3. **No Geographic Ambiguity Handling:** If a user inputs "Springfield", the `geocode_place` tool picks the most prominent match rather than asking the user to clarify which state/country they meant.
+4. **LLM-as-a-Judge Subjectivity:** While we structured our evaluation harness with rigid 1-5 scoring rubrics, evaluating "warmth" and "tone" remains inherently subjective. The human agreement rate on the current judge is high, but not perfect.
