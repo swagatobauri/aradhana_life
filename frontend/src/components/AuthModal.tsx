@@ -89,9 +89,8 @@ export default function AuthModal() {
         console.error("Failed to fetch history", e);
       }
       
-      if (hasProfile) {
-        router.push('/chat');
-      }
+      // We explicitly DO NOT redirect here. 
+      // The user stays on the landing page where BirthForm will show either the input fields or the 'Continue Journey' button.
       
     } catch (err: any) {
       setError(err.message);

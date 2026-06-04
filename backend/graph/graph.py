@@ -54,10 +54,22 @@ def create_graph():
     # Tools go back to the reasoner to evaluate output
     workflow.add_edge("tools", "reasoner")
     
-    # 5. Use in-memory checkpointer for fast startup
-    # MongoDB checkpointer is initialized separately via init_checkpointer()
-    memory = MemorySaver()
+    # 5. Use MongoDB checkpointer for persistent chat history
+    # pyrefly: ignore [missing-import]
+    from motor.motor_asyncio import AsyncIOMotorClient
+    # pyrefly: ignore [missing-import]
+    from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
+    import os
     
+    mongo_url = os.getenv("MONGODB_URI")
+    memory = None
+    if mongo_url:
+        client = AsyncIOMotorClient(mongo_url)
+        memory = AsyncMongoDBSaver(client, db_name="aradhana")
+    else:
+        memory = MemorySaver()
+        print("Warning: MONGODB_URI not set. Using in-memory checkpointer.")
+        
     # Compile the graph
     app = workflow.compile(checkpointer=memory)
     
