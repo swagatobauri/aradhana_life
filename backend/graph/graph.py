@@ -56,16 +56,16 @@ def create_graph():
     
     # 5. Use MongoDB checkpointer for persistent chat history
     # pyrefly: ignore [missing-import]
-    from motor.motor_asyncio import AsyncIOMotorClient
+    from pymongo import MongoClient
     # pyrefly: ignore [missing-import]
-    from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
+    from langgraph.checkpoint.mongodb import MongoDBSaver
     import os
     
     mongo_url = os.getenv("MONGODB_URI")
     memory = None
     if mongo_url:
-        client = AsyncIOMotorClient(mongo_url)
-        memory = AsyncMongoDBSaver(client, db_name="aradhana")
+        client = MongoClient(mongo_url)
+        memory = MongoDBSaver(client, db_name="aradhana")
     else:
         memory = MemorySaver()
         print("Warning: MONGODB_URI not set. Using in-memory checkpointer.")
