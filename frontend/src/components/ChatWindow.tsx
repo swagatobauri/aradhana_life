@@ -120,6 +120,15 @@ export default function ChatWindow() {
     <div className="flex flex-col h-full w-full bg-transparent overflow-hidden">
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 pb-20 no-scrollbar">
         <VedicChart />
+        {messages.length === 0 && !isTyping && (
+          <div className="flex flex-col items-center justify-center h-full mt-32 opacity-50 animate-pulse">
+            <div className="w-12 h-12 rounded-full border border-brand-gold/30 flex items-center justify-center mb-4">
+              <div className="w-2 h-2 rounded-full bg-brand-orange"></div>
+            </div>
+            <p className="text-brand-navy font-serif text-xl">The stars are listening...</p>
+            <p className="text-xs text-brand-navy/60 uppercase tracking-widest mt-2">Ask a question to begin your journey</p>
+          </div>
+        )}
         {messages.map((m, index) => {
           // Hide old 'ghost' messages that got stuck empty in local storage from previous errors
           if (m.role === 'ai' && m.content === '' && (!isTyping || index !== messages.length - 1)) {
