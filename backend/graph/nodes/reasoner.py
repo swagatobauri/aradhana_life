@@ -67,10 +67,16 @@ async def reasoner_node(state: AgentState) -> dict:
     try:
         response = await llm_with_tools.ainvoke(messages)
     except Exception as e:
-        print(f"Tool calling error: {e}. Falling back to standard LLM.")
-        # Fallback to the LLM without tools if tool parsing fails
-        fallback_messages = messages + [SystemMessage(content="You encountered an error trying to use a tool. Please respond to the user directly using your existing knowledge and the context gathered so far, without calling any tools.")]
-        response = await llm.ainvoke(fallback_messages)
+        print(f"LLM or Tool calling error: {e}. Falling back to standard LLM.")
+        try:
+            # Fallback to the LLM without tools if tool parsing fails
+            fallback_messages = messages + [SystemMessage(content="You encountered an error trying to use a tool. Please respond to the user directly using your existing knowledge and the context gathered so far, without calling any tools.")]
+            response = await llm.ainvoke(fallback_messages)
+        except Exception as fallback_e:
+            print(f"Fatal API error (e.g. Rate Limit): {fallback_e}")
+            # pyrefly: ignore [missing-import]
+            from langchain_core.messages import AIMessage
+            response = AIMessage(content="I'm sorry, the stars are cloudy right now and I couldn't connect with the universe. Please try again later.")
     
     return {
         "messages": [response],
