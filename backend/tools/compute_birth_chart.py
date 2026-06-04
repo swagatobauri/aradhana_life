@@ -59,13 +59,13 @@ def _compute_birth_chart_cached(date: str, time: str, lat: float, lng: float, ti
         lat_str, lng_str = geopos_str.split(" ")
         pos = GeoPos(lat_str, lng_str)
         
-        chart = Chart(f_date, pos, IDs=const.LIST_OBJECTS)
-        
         planets_to_fetch = [
             const.SUN, const.MOON, const.MERCURY, const.VENUS, 
             const.MARS, const.JUPITER, const.SATURN, const.URANUS, 
             const.NEPTUNE, const.PLUTO, const.NORTH_NODE
         ]
+        
+        chart = Chart(f_date, pos, IDs=planets_to_fetch)
         
         positions = {}
         for p_name in planets_to_fetch:
