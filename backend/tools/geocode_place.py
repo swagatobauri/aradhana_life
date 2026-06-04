@@ -13,8 +13,8 @@ import functools
 @functools.lru_cache(maxsize=128)
 def _geocode_place_cached(place_name: str) -> str:
     try:
-        # Nominatim requires a user_agent
-        geolocator = Nominatim(user_agent="aradhana_life_agent")
+        # Nominatim requires a user_agent; timeout=10 to handle slow cold starts on free hosting
+        geolocator = Nominatim(user_agent="aradhana_life_agent", timeout=10)
         location = geolocator.geocode(place_name)
         
         if not location:
